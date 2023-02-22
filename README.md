@@ -198,7 +198,15 @@ Next, navigate to the Administrator group under the 'Groups' tab and click on th
 Next, under the groups tab, search for `readonly` (single word), select the `ReadOnlyUsers` group and add pyvmomiReadOnly user to it
 ![image](https://user-images.githubusercontent.com/46345560/220584294-d1ec47ba-d341-4594-86fc-fe80273588d7.png)
 
-This completes our initial setup 
+Finally log in with these credentials to ensure that they have been created
+
+pyvmomiReadOnly
+![image](https://user-images.githubusercontent.com/46345560/220591888-b800174c-16f3-457d-b2db-89565be9af91.png)
+
+pyvmomi
+![image](https://user-images.githubusercontent.com/46345560/220592395-66d1a93a-55f3-42ae-935d-1aeb3d719b52.png)
+
+This completes our initial basic setup
 
 
 
