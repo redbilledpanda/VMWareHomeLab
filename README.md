@@ -184,9 +184,12 @@ Finally, turn the VM ON, it will take around 15m to be fully ON. Wait until you 
 ![image](https://user-images.githubusercontent.com/46345560/220575313-bfbfb541-fcd7-4cf5-a4c6-3a1e27f1f393.png)
 
 Hover your mouse over this and log in using the `root` user. Make sure that the management network is what you had setup in the JSON file above and that it is static. Next log into the web client interface at `https://192.168.160.170/ui` using the Administrator@vsphere.local account and the SSO password that you set up in the JSON above. It should look like this:
-![image](https://user-images.githubusercontent.com/46345560/220580025-c871fec7-bd11-4b38-847c-072f68ba50f1.png)
+![image](https://user-images.githubusercontent.com/46345560/220589463-edc3d198-7f79-4213-a8d8-8c3211ce0990.png)
 
-Then log into the VAMI at https://192.168.160.170:5480/ with the Administrator@vsphere.local account and check the services tab to make sure the vSphere client service is healthy and started. Often times on systems with restricted resources, this service takes time to start. Your CPU fans are blowing at max speed when this service starts and once when CPU utilization is back to 'normal' (aka not 100%), most often your vSphere client service has started. Finally we can now log into the vSphere client with our SSO credentials. Once in, navigate to the Administration section (using the hamburger menu) and under Single Sign on, click on 'Users and Groups', then select the Users tab and add two new users, `pyvmomi` and `pyvmomiReadOnly` for the 'vsphere.local' domain. 
+Then log into the VAMI at https://192.168.160.170:5480/ with the Administrator@vsphere.local account and check the services tab to make sure the vSphere client service is healthy and started. Often times on systems with restricted resources, this service takes time to start. Your CPU fans are blowing at max speed when this service starts and once when CPU utilization is back to 'normal' (aka not 100%), most often your vSphere client service has started. 
+![image](https://user-images.githubusercontent.com/46345560/220589724-1b01f8b0-1f57-44c9-88b8-78061a75f761.png)
+
+Finally we can now log into the vSphere client with our SSO credentials. Once in, navigate to the Administration section (using the hamburger menu) and under Single Sign on, click on 'Users and Groups', then select the Users tab and add two new users, `pyvmomi` and `pyvmomiReadOnly` for the 'vsphere.local' domain. 
 ![image](https://user-images.githubusercontent.com/46345560/220582992-a6f6f657-d584-487c-994c-a3ca19e8f0e2.png)
 
 Next, navigate to the Administrator group under the 'Groups' tab and click on the 'Administrators' group. Add the pyvmomi user to this group:
