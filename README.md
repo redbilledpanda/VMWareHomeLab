@@ -141,7 +141,7 @@ From the above JSON, cull the comment from CEIP and set it to disabled
     }
 ```
 
-Next, change the OS section so that it looks like this:
+Next, change the OS section so that it looks like this (skip the hint, of course):
 ```json
         "os": {
             "password": "SomeSillyPwd", <--- used by the 'root' user
@@ -150,7 +150,7 @@ Next, change the OS section so that it looks like this:
         },
 ```
 
-Next, unless you have a properly configured DNS server, set it to the loopback address like so:
+Next, unless you have a properly configured DNS server, set it to the loopback address like so (skip the hint, of course):
 ```json
         "network": {
             "ip_family": "ipv4",
