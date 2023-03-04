@@ -318,7 +318,7 @@ Finally, let's attach a [vDisk](https://vdc-repo.vmware.com/vmwb-repository/dcr-
 ```python
 unit_number = 0
 sizeGB = 16
-controller = scsi_ctr.device
+controller = scsi_cltr.device # this is the controller we defined above
 disk_spec = vim.vm.device.VirtualDeviceSpec()
 disk_spec.fileOperation = "create"
 disk_spec.operation = vim.vm.device.VirtualDeviceSpec.Operation.add
