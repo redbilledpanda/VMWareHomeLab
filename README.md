@@ -209,6 +209,10 @@ pyvmomi
 
 This completes our initial basic setup
 
+## Some common problems with the setup
+Some times VMs might not power up due to filesystem corruption (usually happens in the case of home labs where we  usually do not provision the vcsa mirrored or on a datastore backed by a volume with fail safe and redundancy options). one of the manifestations of such a failure is, that error messages like "***Module 'MonitorLoop' power on failed***" coupled with "***Failed to create swap file /vmfs/volumes/$datastore-uuid/$vmRootFolder/xxxx-xxxx***". 
+This typically This can be resolved like [this](https://kb.vmware.com/s/article/1006942).
+
 ## Testing the setup
 
 ### Retrieving information from the vcenter server
@@ -331,7 +335,7 @@ disk_spec.device.capacityInKB = sizeGB * 1024 * 1024
 disk_spec.device.controllerKey = controller.key
 vmControllers.append(disk_spec)
 ```
-We can finally add pass this device list to the `config spec` as part of the `create_config_spec` function so the snippet loks like so:
+We can finally pass this device list to the `config spec` as part of the `create_config_spec` function so the snippet looks like so:
 ```python
     config = vim.vm.ConfigSpec()
     config.annotation = annotation
@@ -345,4 +349,4 @@ We can finally add pass this device list to the `config spec` as part of the `cr
     files.vmPathName = "["+datastore_name+"]"
     config.files = files
 ```
-Having extended the config, the rest of the code is exactly as described in the [sample](https://github.com/vmware/pyvmomi-community-samples/blob/master/samples/create_vm.py)
+Having extended the config, the rest of the code is exactly as described in the [sample](https://github.com/vmware/pyvmomi-community-samples/blob/master/samples/create_vm.py). 
