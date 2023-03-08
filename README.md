@@ -1,8 +1,9 @@
 # Background
-This repository mainly contains some python scripts that I'm writing to revise about pyvmomi, that I had worked with sometime back. Recreating the vmware vsphere based lab at home is a moderately involved procedure, the details of which can be read from [here](mysite-not-up-yet). [pyvmomi](https://github.com/vmware/pyvmomi) is a vmware supplied SDK for the VMware vSphere API that allows you to manage ESX, ESXi, and vCenter. A (very) brief introduction to it can be read from [here](https://blogs.vmware.com/vsphere/2012/02/introduction-to-the-vsphere-api-part-1.html).
+This repository mainly contains some python scripts that I'm writing to revise about pyvmomi, that I had worked with sometime back. Recreating the vmware vsphere based lab at home is a moderately involved procedure, the details of which can be read from [here](mysite-not-up-yet).
+
+[pyvmomi](https://github.com/vmware/pyvmomi) is a vmware supplied SDK for the VMware vSphere API that allows you to manage ESX, ESXi, and vCenter. A (very) brief introduction to it can be read from [here](https://blogs.vmware.com/vsphere/2012/02/introduction-to-the-vsphere-api-part-1.html).
 
 ## Testing the setup
-
 ### Retrieving information from the vcenter server
 We'll test our setup with a small python script that [lists all VMs](https://github.com/redbilledpanda/VMWareHomeLab/blob/WIP/listVMs.py) on the Vcenter Server Appliance (henceforth referred to as vcsa). (Install pyvmomi)[https://pypi.org/project/pyvmomi/], preferably in a virtualenv if you don't want to have it installed system-wide. 
 
@@ -90,38 +91,40 @@ Documentation on the virtual device object is [here](https://vdc-repo.vmware.com
 
 In a similar manner, we now add a [SCSI controller](https://vdc-repo.vmware.com/vmwb-repository/dcr-public/3d076a12-29a2-4d17-9269-cb8150b5a37f/8b5969e2-1a66-4425-af17-feff6d6f705d/doc/vim.vm.device.VirtualSCSIController.html):
 ```python
-scsi_ctlr = vim.vm.device.VirtualDeviceSpec()
-scsi_ctlr.operation = vim.vm.device.VirtualDeviceSpec.Operation.add
-scsi_ctlr.device = vim.vm.device.ParaVirtualSCSIController()
-scsi_ctlr.device.deviceInfo = vim.Description()
-scsi_ctlr.device.slotInfo = vim.vm.device.VirtualDevice.PciBusSlotInfo()
-scsi_ctlr.device.slotInfo.pciSlotNumber = 16
-scsi_ctlr.device.controllerKey = 100
-scsi_ctlr.device.unitNumber = 3
-scsi_ctlr.device.busNumber = 0
-scsi_ctlr.device.hotAddRemove = True
-scsi_ctlr.device.sharedBus = 'noSharing'
-scsi_ctlr.device.scsiCtlrUnitNumber = 7
-vmControllers.append(scsi_ctlr)
+    # SCSI controller
+    scsi_ctlr = vim.vm.device.VirtualDeviceSpec()
+    scsi_ctlr.operation = vim.vm.device.VirtualDeviceSpec.Operation.add
+    scsi_ctlr.device = vim.vm.device.ParaVirtualSCSIController()    
+    scsi_ctlr.device.deviceInfo = vim.Description()
+    #scsi_ctlr.device.slotInfo = vim.vm.device.VirtualDevice.PciBusSlotInfo()
+    #scsi_ctlr.device.slotInfo.pciSlotNumber = 16
+    scsi_ctlr.device.controllerKey = 100
+    scsi_ctlr.device.unitNumber = 3
+    scsi_ctlr.device.busNumber = 0
+    scsi_ctlr.device.hotAddRemove = True
+    scsi_ctlr.device.sharedBus = 'noSharing'
+    scsi_ctlr.device.scsiCtlrUnitNumber = 7
+    vmControllers.append(scsi_ctlr)    
 ```
-A SCSI controller controls SCSI disks and sits on it's own bus and can drive a maximum of 15 devices. More information [here](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.vm_admin.doc/GUID-5872D173-A076-42FE-8D0B-9DB0EB0E7362.html) and [here](https://www.nakivo.com/blog/scsi-controller-and-other-vmware-controller-types/). Above values are typical values
+A SCSI controller controls SCSI disks and sits on it's own bus and can drive a maximum of 15 devices. More information [here](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.vm_admin.doc/GUID-5872D173-A076-42FE-8D0B-9DB0EB0E7362.html) and [here](https://www.nakivo.com/blog/scsi-controller-and-other-vmware-controller-types/). Above values are typical values. It appears that explicitly specifying the PCI slot for the controller increases the possibility of it not getting attached. Since we are not too particular about where (on the PCI bus) this one sits, we leave it (for now).
 
 Finally, let's attach a [vDisk](https://vdc-repo.vmware.com/vmwb-repository/dcr-public/c476b64b-c93c-4b21-9d76-be14da0148f9/04ca12ad-59b9-4e1c-8232-fd3d4276e52c/SDK/vsphere-ws/docs/ReferenceGuide/vim.vm.device.VirtualDisk.html) to the above controller:
 ```python
-unit_number = 0
-sizeGB = 16
-controller = scsi_ctr.device
-disk_spec = vim.vm.device.VirtualDeviceSpec()
-disk_spec.fileOperation = "create"
-disk_spec.operation = vim.vm.device.VirtualDeviceSpec.Operation.add
-disk_spec.device = vim.vm.device.VirtualDisk()
-disk_spec.device.backing = vim.vm.device.VirtualDisk.FlatVer2BackingInfo()
-disk_spec.device.backing.diskMode = 'persistent'
-disk_spec.device.backing.fileName = '[%s] %s/%s.vmdk' % ( datastore.name, vm_name, vm_name )
-disk_spec.device.unitNumber = unit_number
-disk_spec.device.capacityInKB = sizeGB * 1024 * 1024
-disk_spec.device.controllerKey = controller.key
-vmControllers.append(disk_spec)
+    # vDisk
+    unit_number = 0
+    controller = scsi_ctlr.device # this is the controller we defined above
+    disk_spec = vim.vm.device.VirtualDeviceSpec()
+    disk_spec.fileOperation = "create"
+    disk_spec.operation = vim.vm.device.VirtualDeviceSpec.Operation.add
+    disk_spec.device = vim.vm.device.VirtualDisk()
+    disk_spec.device.backing = vim.vm.device.VirtualDisk.FlatVer2BackingInfo()
+    disk_spec.device.backing.diskMode = 'persistent'
+    disk_spec.device.backing.thinProvisioned = True
+    disk_spec.device.backing.fileName = '[%s]%s.vmdk' % ( datastore_name, name )
+    disk_spec.device.unitNumber = unit_number
+    disk_spec.device.capacityInKB = sizeGB * 1024 * 1024
+    disk_spec.device.controllerKey = controller.key
+    vmControllers.append(disk_spec)
 ```
 We can finally add pass this device list to the `config spec` as part of the `create_config_spec` function so the snippet loks like so:
 ```python
@@ -135,6 +138,7 @@ We can finally add pass this device list to the `config spec` as part of the `cr
     config.deviceChange = vmControllers # <--- we added this
     files = vim.vm.FileInfo()
     files.vmPathName = "["+datastore_name+"]"
+    config.deviceChange = vmControllers
     config.files = files
 ```
-Having extended the config, the rest of the code is exactly as described in the [sample](https://github.com/vmware/pyvmomi-community-samples/blob/master/samples/create_vm.py)
+Having extended the config, the rest of the code is exactly as described in the [sample](https://github.com/vmware/pyvmomi-community-samples/blob/master/samples/create_vm.py).
