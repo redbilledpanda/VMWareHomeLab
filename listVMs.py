@@ -9,13 +9,9 @@ import sys
 import os
 
 def vconnect(hostIP, username=None, password=None, port=None):
-    if (True):
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        context.check_hostname = False
-        context.verify_mode = ssl.CERT_NONE  # disable our certificate checking for lab
-    else:
-        context = ssl.create_default_context()
-        context.options |= ssl.OP_NO_TLSv1_3
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    context.check_hostname = False
+    context.verify_mode = ssl.CERT_NONE  # disable our certificate checking for lab
 
     #pdb.set_trace()
     hostIP = hostIP.strip('[\'\"]')
@@ -23,20 +19,15 @@ def vconnect(hostIP, username=None, password=None, port=None):
     password = password.strip('[\'\"]')
     port = port.strip('[\'\"]')
 
-    if (port):
-        if '@' not in username:
-            sys.exit("Please include domain name with username")
-        service_instance = connect.SmartConnect(host=str(hostIP),  # build python connection to vSphere
-                                                #user="Administrator@vsphere.local",
-                                                user=username,
-                                                pwd=password,
-                                                port=int(port),
-                                                sslContext=context)
-    else:
-        service_instance = connect.SmartConnect(host=str(hostIP),  # build python connection to vSphere
-                                                user=username,
-                                                pwd=password,
-                                                sslContext=context)
+
+    if '@' not in username:
+        sys.exit("Please include domain name with username")
+    service_instance = connect.SmartConnect(host=str(hostIP),  # build python connection to vSphere
+                                            #user="Administrator@vsphere.local",
+                                            user=username,
+                                            pwd=password,
+                                            port=int(port),
+                                            sslContext=context)
 
     atexit.register(connect.Disconnect, service_instance)  # build disconnect logic
 
@@ -67,19 +58,6 @@ def vconnect(hostIP, username=None, password=None, port=None):
 # into the interpreter. Used to check execution environment
 # were we called directly from the command-line?
 if __name__ == '__main__':
-
-    '''
-    subprocess.call([r'W:/HomeLabVcenter/SetEnvVar.bat'])
-
-    p = Popen('SetEnvVar.bat', cwd=r"W:/HomeLabVcenter", shell=True, stdout=subprocess.PIPE)
-    stdout, stderr = p.communicate()
-
-    vcsahostIP = os.getenv('vcsahostIP')
-    vcsaUserName = os.getenv('vcsaUserName')
-    vcsaPasswd = os.getenv('vcsaPasswd')
-    vcsaAdminPort = os.getenv('vcsaAdminPort')
-    '''
-
     try:
         vcsahostIP = sys.argv[1]
         vcsaUserName = sys.argv[2]
@@ -90,4 +68,3 @@ if __name__ == '__main__':
         print(e)
 
     vconnect(vcsahostIP, vcsaUserName, vcsaPasswd, vcsaAdminPort)
-
