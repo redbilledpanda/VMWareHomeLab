@@ -1,5 +1,5 @@
 # Background
-This repository mainly contains some python scripts that I'm writing to revise about pyvmomi, that I had worked with sometime back. Recreating the vmware vsphere based lab at home is a moderately involved procedure, the details of which can be read from [here](mysite-not-up-yet).
+This repository mainly contains some python scripts that I'm writing to revise about pyvmomi, that I had worked with sometime back. Recreating the vmware vsphere based lab at home is a moderately involved procedure, the details of which can be read from [here]([mysite-not-up-yet](https://redbilledpanda.github.io/2023/03/07/Let's-brew-a-vsphere-lab-at-home.html)).
 
 [pyvmomi](https://github.com/vmware/pyvmomi) is a vmware supplied SDK for the VMware vSphere API that allows you to manage ESX, ESXi, and vCenter. A (very) brief introduction to it can be read from [here](https://blogs.vmware.com/vsphere/2012/02/introduction-to-the-vsphere-api-part-1.html).
 
